@@ -17,6 +17,7 @@ const workStyle = {
     textAlign: "center"
   },
   textCenter: {
+    color: "#999",
     textAlign: "center"
   },
   textArea: {

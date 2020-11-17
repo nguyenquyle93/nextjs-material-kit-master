@@ -33,10 +33,17 @@
   },
   "homepage": "https://demos.creative-tim.com/nextjs-material-kit",
   "dependencies": {
+    "@ckeditor/ckeditor5-build-classic": "^23.1.0",
+    "@ckeditor/ckeditor5-react": "^3.0.0",
     "@material-ui/core": "4.9.13",
     "@material-ui/icons": "4.9.1",
+    "@zeit/next-css": "^1.0.1",
+    "@zeit/next-less": "^1.0.1",
     "@zeit/next-sass": "1.0.1",
+    "babel-preset-es2015": "^6.24.1",
     "classnames": "2.2.6",
+    "css": "^3.0.0",
+    "less": "^3.12.2",
     "moment": "2.25.3",
     "next": "9.3.6",
     "next-compose-plugins": "2.2.0",
@@ -49,9 +56,16 @@
     "react": "16.13.1",
     "react-datetime": "2.16.3",
     "react-dom": "16.13.1",
+    "react-quill": "^1.3.5",
     "react-slick": "0.25.2",
     "react-swipeable-views": "0.13.9",
     "styled-components": "5.1.0",
-    "webpack": "4.43.0"
+    "suneditor-react": "^2.14.6"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.12.3",
+    "@babel/preset-env": "^7.12.1",
+    "babel-loader": "^8.2.1",
+    "webpack": "^4.43.0"
   }
 }
