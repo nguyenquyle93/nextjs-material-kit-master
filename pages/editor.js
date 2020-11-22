@@ -72,9 +72,9 @@ export default function Editor(props) {
       </Parallax>
       <div className={classNames(classes.main, classes.mainRaised)}>
         <div className={classes.container}>
-          <ProductSection />
+          {/* <ProductSection />
           <TeamSection />
-          <WorkSection />
+          <WorkSection /> */}
           <EditorSection />
         </div>
       </div>
