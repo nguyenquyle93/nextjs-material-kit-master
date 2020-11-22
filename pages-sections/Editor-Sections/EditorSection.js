@@ -15,6 +15,8 @@ import FormControl from '@material-ui/core/FormControl';
 import MenuItem from '@material-ui/core/MenuItem';
 import InputLabel from '@material-ui/core/InputLabel';
 import Select from '@material-ui/core/Select';
+import Autocomplete from '@material-ui/lab/Autocomplete';
+import TextField from '@material-ui/core/TextField';
 import firebase from 'firebase/app'
 import { connectData, connectData2, connectData3, connectData4, connectData5, connectData6, newPost } from 'components/FIrebase/firebaseConnect'
 import { message} from 'antd'
@@ -29,8 +31,8 @@ export default function EditorSection() {
   const editorRef = useRef();
   const [content, setContent] = useState('');
   const [htmlContent, setHtmlContent] = useState();
-  const [title, setTitle] = useState();
-  const [imageLink, setImageLink] = useState();
+  const [title, setTitle] = useState('');
+  const [imageLink, setImageLink] = useState('');
   const [data, setData] = useState([]);
   const [dataFilter, setDataFilter] = useState([]);
   const [page, setPage] = useState(connectData);
@@ -60,13 +62,13 @@ export default function EditorSection() {
     })
   }
 
-  // const onsuccess = () => {
-  //   setContent(null)
-  //   setTitle(null)
-  //   setImageLink(null)
-  //   setData([])
-  //   setDataFilter([])
-  // }
+  const onsuccess = () => {
+    setContent('')
+    setTitle('')
+    setImageLink('')
+    setData([])
+    setDataFilter([])
+  }
 
   useEffect(() => {
     update(page)
@@ -88,8 +90,9 @@ export default function EditorSection() {
       pageLink: pageLink,
     })
       .then(() => {
-      message.success(`Bạn đã đăng bài ${title} thành công !!!`)
-      // onsuccess()
+      <div className={classes.textCenter}>
+      {message.success(`Bạn đã đăng bài ${title} thành công !!!`)}
+      </div>
     })
     newPost.push({
       title: title,
@@ -99,38 +102,43 @@ export default function EditorSection() {
       pageLink: pageLink
     })
     .then(() => {
-      message.success(`Bạn đã đăng bài ${title} thành công !!!`)
-      // onsuccess()
+      onsuccess()
     })
     // onsuccess()
   }
 
-  const handleEdit = (id) => {
-    page.child(id).set({
+  const handleEdit = () => {
+    page.child(dataFilter[0].id).set({
       title: title,
-      content: htmlContent,
+      content: content,
       imageLink: imageLink,
       createAt: dataFilter[0].createAt,
       pageLink: pageLink
     })
-    // message.success(`Bạn đã chỉnh sữa bài ${title} thành công !!!`)
-    onsuccess()
-  }
-
-  const handleDelete = (id) => {
-    page.child(id).remove();
-    // message.success(`Bạn đã xóa bài ${dataFilter[0].title} thành công !!!`)
-    onsuccess()
-  }
-
-  const onSelect = (value) => {
-    const a = data.filter((item) => {
-      return item.title === value.toString()
+    .then(() => {
+      message.success(`Bạn đã chỉnh sữa bài ${title} thành công !!!`)
+      onsuccess
     })
-    const content = ContentState.createFromText(a[0].content)
+    // message.success(`Bạn đã chỉnh sữa bài ${title} thành công !!!`)
+  }
+
+  const handleDelete = () => {
+    page.child(dataFilter[0].id).remove()
+    .then(() => {
+      message.success(`Bạn đã xóa bài ${title} thành công !!!`)
+      onsuccess
+    })
+    ;
+  }
+
+  const onTitleSelect = (value) => {
+    const a = data.filter((item) => {
+      return item.id === value.toString()
+    })
+    setContent(a[0]?.content)
+    setTitle(a[0]?.title.toString())
+    setImageLink(a[0]?.imageLink)
     setDataFilter(a)
-    setTitle(a[0].title)
-    setImageLink(a[0].imageLink)
   }
   const onChangePage = (index) => {
     const value = index.target.value
@@ -154,6 +162,7 @@ export default function EditorSection() {
     const value = event.target.value
     setImageLink(value)
   }
+
   return (
     <div className={classes.textCenter}>
       <GridContainer >
@@ -171,19 +180,17 @@ export default function EditorSection() {
                 </FormControl>
               </GridItem>
               <GridItem xs={12} sm={12} md={6}>
-                {/* <AutoComplete
-                  style={{ width: "100%", marginTop: 10 }}
-                  size="large"
-                  placeholder="tile search"
-                  options={data?.map((item) => {
-                    return { ...item, value: item.title }
-                  })}
-                  onSelect={onSelect}
-                // filterOption={(inputValue, option) =>
-                //   option.value.toUpperCase().indexOf(inputValue.toUpperCase()) !==
-                //   -1
-                // }
-                /> */}
+              <Autocomplete
+                className={classes.autoSelect}
+                id="auto-complete"
+                autoComplete
+                options={data}
+                onInputChange={(event, newInputValue) => {
+                  onTitleSelect(newInputValue);
+                }}
+                getOptionLabel={(option) => option.id?option.id:''}
+                renderInput={(params) => <TextField {...params} label="Title Select"  />}
+               />
               </GridItem>
               <GridItem xs={12} sm={12} md={6}>
               <CustomInput
@@ -192,8 +199,8 @@ export default function EditorSection() {
                   formControlProps={{
                     fullWidth: true
                   }}
-                  value = {title}
                   inputProps={{
+                    value:title,
                     onChange:handleTitleChange
                   }}
 
@@ -203,10 +210,12 @@ export default function EditorSection() {
                 <CustomInput
                   labelText="Avatar"
                   id="avatar"
+                 
                   formControlProps={{
                     fullWidth: true
                   }}
                   inputProps={{
+                    value:imageLink,
                     onChange:handleImageChange
                   }}
                 />
@@ -233,6 +242,18 @@ export default function EditorSection() {
                 onClick={handleCreate}
                 disabled={!content || !title || !imageLink}
                 >Create</Button>
+          </GridItem>
+        <GridItem xs={12} sm={12} md={4} className={classes.textCenter}>
+                <Button 
+                color="success"
+                onClick={handleEdit}
+                >Edit</Button>
+          </GridItem>
+        <GridItem xs={12} sm={12} md={4} className={classes.textCenter}>
+                <Button 
+                color="danger"
+                onClick={handleDelete}
+                >Delete</Button>
           </GridItem>
       </GridContainer>
     </div>

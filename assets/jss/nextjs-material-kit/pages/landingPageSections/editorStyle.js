@@ -3,10 +3,13 @@ import { title } from "assets/jss/nextjs-material-kit.js";
 const editorStyle = {
   formControl: {
     margin: 10,
-    minWidth: 120,
+    minWidth: '100%',
   },
   selectEmpty: {
     marginTop: 10,
+  },
+  autoSelect: {
+    margin: 10,
   },
   section: {
     padding: "70px 0"
