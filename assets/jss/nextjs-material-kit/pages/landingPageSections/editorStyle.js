@@ -1,6 +1,13 @@
 import { title } from "assets/jss/nextjs-material-kit.js";
 
 const editorStyle = {
+  section: {
+    backgroundColor: "#FFFFFF",
+    display: "block",
+    width: "100%",
+    position: "relative",
+    padding: "0"
+  },
   formControl: {
     margin: 10,
     minWidth: '100%',

@@ -20,11 +20,16 @@ import TextField from '@material-ui/core/TextField';
 import firebase from 'firebase/app'
 import { connectData, connectData2, connectData3, connectData4, connectData5, connectData6, newPost } from 'components/FIrebase/firebaseConnect'
 import { message} from 'antd'
+import Check from "@material-ui/icons/Check";
 
 import styles from "assets/jss/nextjs-material-kit/pages/landingPageSections/editorStyle.js";
+import Snackbar from '@material-ui/core/Snackbar';
+import MuiAlert, { AlertProps } from '@material-ui/lab/Alert';
+import SnackbarContent from './../../components/Snackbar/SnackbarContent';
 const useStyles = makeStyles(styles);
 const { Option } = Select;
 const pageOptions = ["the-thao", "casino", "slot", "xo-so", "khuyen-mai", "ve-chung-toi", "ho-tro"]
+
 
 export default function EditorSection() {
   const classes = useStyles();
@@ -38,6 +43,8 @@ export default function EditorSection() {
   const [page, setPage] = useState(connectData);
   const [pageLink, setPageLink] = useState("the-thao");
   const [pagePost, setPagePost] = useState(0);
+  const [alertOpen, setAlertOpen] = useState(false);
+  const [action, setAction] = useState('');
 
   const update = (value) => {
     value.on('value', (notes) => {
@@ -81,7 +88,6 @@ export default function EditorSection() {
 
 
   const handleCreate = () => {
-    console.log("1111111aaaaa",pageLink)
     page.push({
       title: title,
       content: content,
@@ -90,9 +96,8 @@ export default function EditorSection() {
       pageLink: pageLink,
     })
       .then(() => {
-      <div className={classes.textCenter}>
-      {message.success(`Bạn đã đăng bài ${title} thành công !!!`)}
-      </div>
+        setAlertOpen(true)
+        setAction('đăng bài')
     })
     newPost.push({
       title: title,
@@ -116,7 +121,8 @@ export default function EditorSection() {
       pageLink: pageLink
     })
     .then(() => {
-      message.success(`Bạn đã chỉnh sữa bài ${title} thành công !!!`)
+      setAlertOpen(true)
+      setAction('sữa bài')
       onsuccess
     })
     // message.success(`Bạn đã chỉnh sữa bài ${title} thành công !!!`)
@@ -125,13 +131,15 @@ export default function EditorSection() {
   const handleDelete = () => {
     page.child(dataFilter[0].id).remove()
     .then(() => {
-      message.success(`Bạn đã xóa bài ${title} thành công !!!`)
+      setAlertOpen(true)
+      setAction('xóa bài')
       onsuccess
     })
     ;
   }
 
   const onTitleSelect = (value) => {
+    console.log("111111",value)
     const a = data.filter((item) => {
       return item.id === value.toString()
     })
@@ -148,6 +156,7 @@ export default function EditorSection() {
     setPageLink(pageOptions[value])
     // update(pageSelect[index])
     setPagePost(index)
+    update(pageSelect[value])
   }
 
   const handleContentChange = (e) => {
@@ -163,9 +172,18 @@ export default function EditorSection() {
     setImageLink(value)
   }
 
+  const handleDrop = (event) =>{
+    console.log(event); //Get the drop event
+  }
+
   return (
     <div className={classes.textCenter}>
       <GridContainer >
+            <Snackbar open={alertOpen} autoHideDuration={3000} onClose={()=>setAlertOpen(false)}>
+              <MuiAlert onClose={()=>setAlertOpen(false)} severity="success" variant="filled">
+                Bạn đã {action} {title} thành công !
+              </MuiAlert>
+            </Snackbar>
               <GridItem xs={12} sm={12} md={6}>
                 <FormControl className={classes.formControl}>
                 <InputLabel id="page">Page Select</InputLabel>
@@ -185,10 +203,12 @@ export default function EditorSection() {
                 id="auto-complete"
                 autoComplete
                 options={data}
-                onInputChange={(event, newInputValue) => {
-                  onTitleSelect(newInputValue);
+                onInputChange={(event, data) => {
+                  onTitleSelect(data);
                 }}
-                getOptionLabel={(option) => option.id?option.id:''}
+                value={data}
+                getOptionLabel={(option) => option.title?option.title:''}
+                inputValue={data.id}
                 renderInput={(params) => <TextField {...params} label="Title Select"  />}
                />
               </GridItem>
@@ -229,9 +249,24 @@ export default function EditorSection() {
             placeholder="Please type here..."
             setContents={content}
             onChange={handleContentChange}
+            onDrop={handleDrop}
             setOptions={{
             height: 200,
-            buttonList: buttonList.formatting // Or Array of button list, eg. [['font', 'align'], ['image']]
+            // buttonList: buttonList.formatting // Or Array of button list, eg. [['font', 'align'], ['image']]
+            buttonList: [
+              ['undo', 'redo',
+              'font', 'fontSize', 'formatBlock',
+              'paragraphStyle', 'blockquote',
+              'bold', 'underline', 'italic', 'strike', 'subscript', 'superscript',
+              'fontColor', 'hiliteColor', 'textStyle',
+              'removeFormat',
+              'outdent', 'indent',
+              'align', 'horizontalRule', 'list', 'lineHeight',
+              'table', 'link', 'image', 'video', 'audio', /** 'math', */ // You must add the 'katex' library at options to use the 'math' plugin.
+              /** 'imageGallery', */ // You must add the "imageGalleryUrl".
+              'fullScreen', 'showBlocks', 'codeView',
+              'preview', 'print', 'save', 'template']
+          ]
             // Other option
         }}
             />
@@ -247,12 +282,14 @@ export default function EditorSection() {
                 <Button 
                 color="success"
                 onClick={handleEdit}
+                disabled={!content || !title || !imageLink}
                 >Edit</Button>
           </GridItem>
         <GridItem xs={12} sm={12} md={4} className={classes.textCenter}>
                 <Button 
                 color="danger"
                 onClick={handleDelete}
+                disabled={!content || !title || !imageLink}
                 >Delete</Button>
           </GridItem>
       </GridContainer>
