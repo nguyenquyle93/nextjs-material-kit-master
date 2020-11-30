@@ -26,6 +26,7 @@ import styles from "assets/jss/nextjs-material-kit/pages/landingPageSections/edi
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert, { AlertProps } from '@material-ui/lab/Alert';
 import SnackbarContent from './../../components/Snackbar/SnackbarContent';
+import UploadImage from './UploadImage';
 const useStyles = makeStyles(styles);
 const { Option } = Select;
 const pageOptions = ["the-thao", "casino", "slot", "xo-so", "khuyen-mai", "ve-chung-toi", "ho-tro"]
@@ -172,10 +173,20 @@ export default function EditorSection() {
     setImageLink(value)
   }
 
-  const handleDrop = (event) =>{
-    console.log(event); //Get the drop event
+  const handleDrop = (e, cleanData, maxCharCount, core) =>{
+    console.log("111111111",e)
   }
 
+  const imageUploadHandler = function (xmlHttp, info, core) {
+    // console.log("111111111")
+    // Editor code
+    const response = JSON.parse(xmlHttp.responseText);
+    if (response.errorMessage) {
+        this.plugins.image.error.call(this, response.errorMessage, response);
+    } else {
+        this.plugins.image.register.call(this, info, response);
+    }
+}
   return (
     <div className={classes.textCenter}>
       <GridContainer >
@@ -250,6 +261,7 @@ export default function EditorSection() {
             setContents={content}
             onChange={handleContentChange}
             onDrop={handleDrop}
+            imageUploadHandler={imageUploadHandler}
             setOptions={{
             height: 200,
             // buttonList: buttonList.formatting // Or Array of button list, eg. [['font', 'align'], ['image']]
@@ -292,6 +304,7 @@ export default function EditorSection() {
                 disabled={!content || !title || !imageLink}
                 >Delete</Button>
           </GridItem>
+          <UploadImage/>
       </GridContainer>
     </div>
   );

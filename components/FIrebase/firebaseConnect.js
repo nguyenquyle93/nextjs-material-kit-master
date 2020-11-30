@@ -1,5 +1,8 @@
 import firebase from 'firebase/app'
 import { functions } from 'firebase';
+import 'firebase/firestore';
+import 'firebase/storage';
+import 'firebase/auth';
 
 var firebaseConfig = {
     apiKey: "AIzaSyAepYvU1BivlITK2fc32n1SQQTYzjRoV9E",
@@ -28,3 +31,5 @@ var firebaseConfig = {
   export const connectData6 = firebase.database().ref('pages6');
   export const connectData7 = firebase.database().ref('pages7');
   export const newPost = firebase.database().ref('newPost');
+
+  export const ImageUpload = firebase.storage()
