@@ -27,6 +27,7 @@ import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert, { AlertProps } from '@material-ui/lab/Alert';
 import SnackbarContent from './../../components/Snackbar/SnackbarContent';
 import UploadImage from './UploadImage';
+import Dictaphone from "./Recognition";
 const useStyles = makeStyles(styles);
 const { Option } = Select;
 const pageOptions = ["the-thao", "casino", "slot", "xo-so", "khuyen-mai", "ve-chung-toi", "ho-tro"]
@@ -186,9 +187,11 @@ export default function EditorSection() {
     } else {
         this.plugins.image.register.call(this, info, response);
     }
-}
+  }
+
   return (
     <div className={classes.textCenter}>
+      <Dictaphone/>
       <GridContainer >
             <Snackbar open={alertOpen} autoHideDuration={3000} onClose={()=>setAlertOpen(false)}>
               <MuiAlert onClose={()=>setAlertOpen(false)} severity="success" variant="filled">
@@ -197,7 +200,7 @@ export default function EditorSection() {
             </Snackbar>
               <GridItem xs={12} sm={12} md={6}>
                 <FormControl className={classes.formControl}>
-                <InputLabel id="page">Page Select</InputLabel>
+            <InputLabel id="page">Page Select</InputLabel>
                 <Select
                   labelId="page"
                   id="page"
