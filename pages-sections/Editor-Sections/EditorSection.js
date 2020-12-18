@@ -178,8 +178,17 @@ export default function EditorSection() {
     console.log("111111111",e)
   }
 
+  const handleImageChangeUpload = (event) => {
+    console.log("11111111155",event.target.value)
+  }
+
+  const insertImage = (e) => {
+    console.log("111111116666", e.target.files)
+  }
+
   const imageUploadHandler = function (xmlHttp, info, core) {
     // console.log("111111111")
+    console.log("11111111122222")
     // Editor code
     const response = JSON.parse(xmlHttp.responseText);
     if (response.errorMessage) {
@@ -188,7 +197,18 @@ export default function EditorSection() {
         this.plugins.image.register.call(this, info, response);
     }
   }
+ 
+  const onImageUpload = (targetElement, index, state, imageInfo, remainingFilesCount) => {
+    console.log("111111111",imageInfo)
+  }
 
+  const handleImageUploadBefore = (files) => {
+    console.log("1111111114444",files)
+  }
+
+  const uploadHandler = (files) => {
+    console.log("111111111333",files)
+  }
   return (
     <div className={classes.textCenter}>
       <Dictaphone/>
@@ -265,6 +285,11 @@ export default function EditorSection() {
             onChange={handleContentChange}
             onDrop={handleDrop}
             imageUploadHandler={imageUploadHandler}
+            onImageUploadBefore={handleImageUploadBefore}
+            onImageChange={handleImageChangeUpload}
+            onImageUpload={onImageUpload}
+            uploadHandler={uploadHandler}
+            insertImage={insertImage}
             setOptions={{
             height: 200,
             // buttonList: buttonList.formatting // Or Array of button list, eg. [['font', 'align'], ['image']]
