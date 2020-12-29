@@ -141,7 +141,7 @@ export default function EditorSection() {
   }
 
   const onTitleSelect = (value) => {
-    console.log("111111",value)
+    if(value.length === 0){return onsuccess()}
     const a = data.filter((item) => {
       return item.id === value.toString()
     })
@@ -157,7 +157,7 @@ export default function EditorSection() {
     setPage(pageSelect[value])
     setPageLink(pageOptions[value])
     // update(pageSelect[index])
-    setPagePost(index)
+    setPagePost(value)
     update(pageSelect[value])
   }
 
@@ -170,48 +170,13 @@ export default function EditorSection() {
     setTitle(value)
   }
   const handleImageChange = (event) => {
-    const value = event.target.value
-    setImageLink(value)
+    setImageLink(event)
+    // console.log('11111111 đã kết nối thành công')
   }
 
-  const handleDrop = (e, cleanData, maxCharCount, core) =>{
-    console.log("111111111",e)
-  }
 
-  const handleImageChangeUpload = (event) => {
-    console.log("11111111155",event.target.value)
-  }
-
-  const insertImage = (e) => {
-    console.log("111111116666", e.target.files)
-  }
-
-  const imageUploadHandler = function (xmlHttp, info, core) {
-    // console.log("111111111")
-    console.log("11111111122222")
-    // Editor code
-    const response = JSON.parse(xmlHttp.responseText);
-    if (response.errorMessage) {
-        this.plugins.image.error.call(this, response.errorMessage, response);
-    } else {
-        this.plugins.image.register.call(this, info, response);
-    }
-  }
- 
-  const onImageUpload = (targetElement, index, state, imageInfo, remainingFilesCount) => {
-    console.log("111111111",imageInfo)
-  }
-
-  const handleImageUploadBefore = (files) => {
-    console.log("1111111114444",files)
-  }
-
-  const uploadHandler = (files) => {
-    console.log("111111111333",files)
-  }
   return (
     <div className={classes.textCenter}>
-      <Dictaphone/>
       <GridContainer >
             <Snackbar open={alertOpen} autoHideDuration={3000} onClose={()=>setAlertOpen(false)}>
               <MuiAlert onClose={()=>setAlertOpen(false)} severity="success" variant="filled">
@@ -224,7 +189,7 @@ export default function EditorSection() {
                 <Select
                   labelId="page"
                   id="page"
-                  // value={pagePost}
+                  value={pagePost}
                   onChange={onChangePage}
                 >
                   {pageOptions.map((item, index) => <MenuItem value={index}>{item}</MenuItem>)}
@@ -240,9 +205,12 @@ export default function EditorSection() {
                 onInputChange={(event, data) => {
                   onTitleSelect(data);
                 }}
-                value={data}
-                getOptionLabel={(option) => option.title?option.title:''}
-                inputValue={data.id}
+                getOptionLabel={(option) => option.id?option.id:''}
+                renderOption={(option) => (
+                  <React.Fragment>
+                    <span>{option.title}</span>
+                  </React.Fragment>
+                )}
                 renderInput={(params) => <TextField {...params} label="Title Select"  />}
                />
               </GridItem>
@@ -260,7 +228,7 @@ export default function EditorSection() {
 
                 />
               </GridItem>
-              <GridItem xs={12} sm={12} md={6}>
+              <GridItem xs={12} sm={12} md={2}>
                 <CustomInput
                   labelText="Avatar"
                   id="avatar"
@@ -274,6 +242,9 @@ export default function EditorSection() {
                   }}
                 />
               </GridItem>
+              <GridItem xs={12} sm={12} md={4}>
+                <UploadImage setImageLink={setImageLink}/>
+              </GridItem>
             <GridItem cs={12} sm={12} md={12}>
             <SunEditor 
             ref={editorRef}
@@ -283,13 +254,6 @@ export default function EditorSection() {
             placeholder="Please type here..."
             setContents={content}
             onChange={handleContentChange}
-            onDrop={handleDrop}
-            imageUploadHandler={imageUploadHandler}
-            onImageUploadBefore={handleImageUploadBefore}
-            onImageChange={handleImageChangeUpload}
-            onImageUpload={onImageUpload}
-            uploadHandler={uploadHandler}
-            insertImage={insertImage}
             setOptions={{
             height: 200,
             // buttonList: buttonList.formatting // Or Array of button list, eg. [['font', 'align'], ['image']]
@@ -332,7 +296,6 @@ export default function EditorSection() {
                 disabled={!content || !title || !imageLink}
                 >Delete</Button>
           </GridItem>
-          <UploadImage/>
       </GridContainer>
     </div>
   );

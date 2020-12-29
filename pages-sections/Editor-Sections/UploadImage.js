@@ -1,8 +1,15 @@
 import React, { useState } from 'react'
 import {ImageUpload} from '../../components/FIrebase/firebaseConnect'
 import { compareAsc, format } from 'date-fns'
+import styles from "assets/jss/nextjs-material-kit/pages/componentsSections/typographyStyle.js";
+import { makeStyles } from "@material-ui/core/styles";
 
-export default function UploadImage() {
+const useStyles = makeStyles(styles);
+export default function UploadImage({
+    setImageLink,
+    ...props
+}) {
+    const classes = useStyles();
     const dateTime = format(new Date(), 'yyyyMMddHHmmss')
     const [imageUrl, setimageUrl] = useState();
     const readImage = async (e) => {
@@ -11,14 +18,14 @@ export default function UploadImage() {
         await imageRef.put(file)
         imageRef.getDownloadURL().then((url) => {
             setimageUrl(url)
+            setImageLink(url)
         })
     }
-    console.log("111111111",imageUrl)
     return (
         <div>
-            <h1>Upload</h1>
             <input type='file' accept='image/*' onChange={readImage} />
-            <image src={imageUrl}></image>=
+            <img src={imageUrl}
+            className={classes.imgRounded + " " + classes.imgFluid}/>
         </div>
     )
 }
