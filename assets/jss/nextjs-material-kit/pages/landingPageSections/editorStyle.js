@@ -8,6 +8,9 @@ const editorStyle = {
     position: "relative",
     padding: "0"
   },
+  margin:{
+    margin: "auto"
+  },
   formControl: {
     margin: 10,
     minWidth: '100%',

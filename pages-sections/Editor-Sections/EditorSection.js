@@ -242,7 +242,7 @@ export default function EditorSection() {
                   }}
                 />
               </GridItem>
-              <GridItem xs={12} sm={12} md={4}>
+              <GridItem xs={12} sm={12} md={4} className={classes.margin}>
                 <UploadImage setImageLink={setImageLink}/>
               </GridItem>
             <GridItem cs={12} sm={12} md={12}>
